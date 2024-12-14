@@ -53,21 +53,6 @@ services:
     networks:
       - gitlab-network
 
-  gitlab-runner:
-    image: gitlab/gitlab-runner:alpine
-      #container_name: "gitlab-runner"
-    deploy:
-      mode: replicated
-      replicas: 1 # Diese Zahl kannst du dynamisch ändern
-    environment:
-      - CI_SERVER_URL=http://gitlab
-      - REGISTRATION_TOKEN=${REGISTRATION_TOKEN} # Ersetze <TOKEN> durch deinen tatsächlichen Token
-    volumes:
-      - './runner-config:/etc/gitlab-runner'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    networks:
-      - gitlab-network
-
   ldap:
     container_name: "gitlab-ldap"
     build:
