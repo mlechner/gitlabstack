@@ -1,0 +1,115 @@
+# Organizational Unit for Users
+dn: ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+# Organizational Unit for Groups
+dn: ou=groups,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+
+# Users Group
+dn: cn=users,ou=groups,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: users
+description: GitLab Users Group
+uniqueMember: uid=adminnull,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=usereins,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=userzwei,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=deveins,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=devzwei,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=devdrei,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=devvier,ou=users,dc=gitlab,dc=example,dc=test
+
+# Developers Group
+dn: cn=developers,ou=groups,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: developers
+description: GitLab Developers Group
+uniqueMember: uid=deveins,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=devzwei,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=devdrei,ou=users,dc=gitlab,dc=example,dc=test
+uniqueMember: uid=devvier,ou=users,dc=gitlab,dc=example,dc=test
+
+# Admins Group
+dn: cn=admins,ou=groups,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: admins
+description: GitLab Admins Group
+uniqueMember: uid=adminnull,ou=users,dc=gitlab,dc=example,dc=test
+
+# Users
+dn: uid=adminnull,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: adminnull
+cn: Null
+sn: Adminbenutzer
+
+dn: uid=usereins,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: usereins
+cn: Eins
+sn: Standardbenutzer
+
+dn: uid=userzwei,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: userzwei
+cn: Zwei
+sn: Standardbenutzer
+
+dn: uid=deveins,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: deveins
+cn: Eins
+sn: Entwicklungsbenutzer
+
+dn: uid=devzwei,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: devzwei
+cn: Zwei
+sn: Entwicklungsbenutzer
+
+dn: uid=devdrei,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: devdrei
+cn: Drei
+sn: Entwicklungsbenutzer
+
+dn: uid=devvier,ou=users,dc=gitlab,dc=example,dc=test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+userPassword: password
+uid: devvier
+cn: Vier
+sn: Entwicklungsbenutzer
