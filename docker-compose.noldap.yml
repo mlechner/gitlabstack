@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 
 services:
   gitlab:
@@ -12,22 +12,11 @@ services:
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
         puma['port'] = 8081
         gitlab_workhorse['auth_backend'] = "http://localhost:8081"
-        gitlab_rails['ldap_enabled'] = true
-        gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
-          main:
-            label: 'LDAP'
-            host: '${LDAP_SERVER}'
-            port: ${LDAP_PORT}
-            uid: '${LDAP_UID}'
-            base: '${LDAP_BASE}'
-            bind_dn: '${LDAP_BIND_DN}'
-            password: '${LDAP_PASSWORD}'
-            encryption: 'plain'
-        EOS
     ports:
       - "${GITLAB_HTTP_PORT}:8080"
       - "${GITLAB_HTTPS_PORT}:443"
       - "${GITLAB_SSH_PORT}:22"
+      - "8081:8081"
     volumes:
       - './config:/etc/gitlab'
       - './logs:/var/log/gitlab'
@@ -41,7 +30,7 @@ services:
       mode: replicated
       replicas: 1 # Diese Zahl kannst du dynamisch ändern
     environment:
-      - CI_SERVER_URL=http://${GITLAB_HOST}:${GITLAB_HTTP_PORT}
+      - CI_SERVER_URL=http://gitlab
       - REGISTRATION_TOKEN=${REGISTRATION_TOKEN} # Ersetze <TOKEN> durch deinen tatsächlichen Token
     volumes:
       - './runner-config:/etc/gitlab-runner'

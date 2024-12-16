@@ -51,8 +51,10 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: adminnull
-cn: Null
+cn: Null Admin
+givenName: Null
 sn: Adminbenutzer
+mail: adminnull@example.test
 
 dn: uid=usereins,ou=users,dc=gitlab,dc=example,dc=test
 objectClass: top
@@ -61,8 +63,10 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: usereins
-cn: Eins
+cn: Eins Benutzer
+givenName: Eins
 sn: Standardbenutzer
+mail: usereins@example.test
 
 dn: uid=userzwei,ou=users,dc=gitlab,dc=example,dc=test
 objectClass: top
@@ -71,8 +75,10 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: userzwei
-cn: Zwei
+cn: Zwei Benutzer
+givenName: Zwei
 sn: Standardbenutzer
+mail: userzwei@example.test
 
 dn: uid=deveins,ou=users,dc=gitlab,dc=example,dc=test
 objectClass: top
@@ -81,8 +87,10 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: deveins
-cn: Eins
+cn: Eins Entwickler
+givenName: Eins
 sn: Entwicklungsbenutzer
+mail: deveins@example.test
 
 dn: uid=devzwei,ou=users,dc=gitlab,dc=example,dc=test
 objectClass: top
@@ -91,8 +99,10 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: devzwei
-cn: Zwei
+cn: Zwei Entwickler
+givenName: Zwei
 sn: Entwicklungsbenutzer
+mail: devzwei@example.test
 
 dn: uid=devdrei,ou=users,dc=gitlab,dc=example,dc=test
 objectClass: top
@@ -101,8 +111,10 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: devdrei
-cn: Drei
+cn: Drei Entwickler
+givenName: Drei
 sn: Entwicklungsbenutzer
+mail: devdrei@example.test
 
 dn: uid=devvier,ou=users,dc=gitlab,dc=example,dc=test
 objectClass: top
@@ -111,5 +123,7 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 userPassword: password
 uid: devvier
-cn: Vier
+cn: Vier Entwickler
+givenName: Vier
 sn: Entwicklungsbenutzer
+mail: devvier@example.test
