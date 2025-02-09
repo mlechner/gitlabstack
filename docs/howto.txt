@@ -1,0 +1,8 @@
+sudo rm -Rf runner-config config data logs
+sudo systemctl start docker
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml 
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml build --no-cache --pull
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml logs -f gitlab
+sudo cat config/initial_root_password 
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml down
