@@ -8,11 +8,12 @@ services:
     hostname: "${GITLAB_HOST}"
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://${GITLAB_HOST}:${GITLAB_HTTP_PORT}'
-        puma['port'] = 8081
+        external_url 'http://${GITLAB_HOST}:${GITLAB_HTTP_PORT}${GITLAB_HTTP_URL}'
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
+        puma['port'] = 8081
         gitlab_workhorse['auth_backend'] = "http://localhost:8081"
-        gitlab_rails['initial_root_password'] = ${GITLAB_ROOT_PASSWORD}
+        gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
+        gitlab_rails['initial_shared_runners_registration_token'] = "${REGISTRATION_TOKEN}"
         gitlab_rails['ldap_enabled'] = true
         gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
           main:
@@ -37,12 +38,12 @@ services:
       - gitlab-network
 
   gitlab-runner:
-    image: gitlab/gitlab-runner:alpine
+    image: gitlab/gitlab-runner:latest
     deploy:
       mode: replicated
       replicas: 1 # Diese Zahl kannst du dynamisch ändern
     environment:
-      - CI_SERVER_URL=http://${GITLAB_HOST}:${GITLAB_HTTP_PORT}
+      - CI_SERVER_URL=http://${GITLAB_HOST}:${GITLAB_HTTP_PORT}${GITLAB_HTTP_URL}
       - REGISTRATION_TOKEN=${REGISTRATION_TOKEN} # Ersetze <TOKEN> durch deinen tatsächlichen Token
     volumes:
       - './runner-config:/etc/gitlab-runner'

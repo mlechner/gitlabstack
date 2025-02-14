@@ -6,3 +6,8 @@ docker compose -f docker-compose.yml -f docker-compose.ldap.yml up -d
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml logs -f gitlab
 sudo cat config/initial_root_password 
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml down
+
+##
+docker exec gitlabstack-gitlab-runner-1 gitlab-runner register --non-interactive --docker-image alpine:latest --description "docker-runner-1" --executor "docker"
+docker exec gitlabstack-gitlab-runner-1 gitlab-runner list
+docker exec gitlabstack-gitlab-runner-1 gitlab-runner unregister --name docker-runner-1
