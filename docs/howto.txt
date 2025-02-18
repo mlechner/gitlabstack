@@ -1,13 +1,19 @@
 sudo rm -Rf runner-config config data logs
 sudo systemctl start docker
-docker compose -f docker-compose.yml -f docker-compose.ldap.yml 
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml down
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml build --no-cache --pull
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml up -d
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml logs -f gitlab
-sudo cat config/initial_root_password 
+sudo cat config/initial_root_password #if not set in .env
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml down
 
-##
+## examples for runner registration
+# first "create" the runner in the Gitlab GUI, then register the runner using the token from creation
 docker exec gitlabstack-gitlab-runner-1 gitlab-runner register --non-interactive --docker-image alpine:latest --description "docker-runner-1" --executor "docker"
+# "--docker-network-mode host" is needed in some container environments to enable cloning a repo by the runner
+docker exec gitlabstack-gitlab-runner-1 gitlab-runner register --non-interactive --url http://<gitlab> --token <token_shown_on_creation> --docker-image alpine:latest --docker-network-mode host --description "docker-runner-1" --executor "docker"
+docker exec gitlabstack-gitlab-runner-1 gitlab-runner register --non-interactive --url http://<gitlab> --token <token_shown_on_creation> --shell bash --description "shell-runner-1" --executor "shell"
+# show runer known to gitlab-runner container - can be easily edited by changing ./runner-config/config.toml
 docker exec gitlabstack-gitlab-runner-1 gitlab-runner list
 docker exec gitlabstack-gitlab-runner-1 gitlab-runner unregister --name docker-runner-1
+docker exec gitlabstack-gitlab-runner-1 gitlab-runner unregister --name shell-runner-1
