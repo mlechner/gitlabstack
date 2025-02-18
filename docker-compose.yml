@@ -14,6 +14,7 @@ services:
         gitlab_workhorse['auth_backend'] = "http://localhost:8081"
         gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
         gitlab_rails['initial_shared_runners_registration_token'] = "${REGISTRATION_TOKEN}"
+        gitlab_rails['lfs_enabled'] = true
         gitlab_rails['ldap_enabled'] = true
         gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
           main:
