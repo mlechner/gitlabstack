@@ -1,0 +1,9 @@
+some things to do:
+
+- add traefik or nginx in front of stack
+- support https
+
+- opt:
+  - add nexus container for image and artifact repos?
+  - integrate trivy security scanner?
+  - 
