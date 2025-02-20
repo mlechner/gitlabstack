@@ -1,0 +1,25 @@
+# Done manually as "root" via GUI
+
+- Configuration
+  - Settings
+    - General
+      - Import and export
+        - Activated: Github, Gitlab export, Repo by URL
+        - Enabled: Project export
+      - Sign-up restrictions
+        - Sign-up NOT enabled
+        - E-Mail confirmation Soft
+    - Preferences
+      - Localization
+        - First day of week: Monday
+        - Default language: EN -> DE (to be discussed)
+    - Appearance
+      - favicon set
+      - Header logo
+  - Structure
+    - created some Group(s) and Subgroup(s)
+- Imports
+  - imported various Repos using Github access tokens into Groups and Subgroups
+-  Users
+  - configured sone LDAP Users after their first login
+
