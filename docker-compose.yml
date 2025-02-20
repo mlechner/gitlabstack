@@ -37,6 +37,23 @@ services:
       - './data:/var/opt/gitlab'
     networks:
       - gitlab-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitlab_insecure.entrypoints=web
+      - traefik.http.routers.gitlab_insecure.rule=Host('dev-lem-fr.lab.bfs.de')
+      - traefik.http.routers.gitlab_insecure.middlewares=redirect@file
+
+      - traefik.http.routers.gitlab.entrypoints=web-secure
+      - traefik.http.routers.gitlab.rule=Host('dev-lem-fr.lab.bfs.de')
+      - traefik.http.services.gitlab.loadbalancer.server.port=8080
+      - traefik.docker.network=gitlab_gitlab-network
+
+      # Can't filter TCP traffic on SNI, see link below
+      # https://community.containo.us/t/routing-ssh-traffic-with-traefik-v2/717/6
+      - traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)
+      - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
+      - traefik.tcp.routers.gitlab-ssh.service=gitlab-ssh-svc
+      - traefik.tcp.services.gitlab-ssh-svc.loadbalancer.server.port=2222
 
   gitlab-runner:
     image: gitlab/gitlab-runner:latest
@@ -51,6 +68,33 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock'
     networks:
       - gitlab-network
+
+  traefik:
+    image: traefik:latest
+    container_name: gitlab-traefik
+    restart: always
+    ports:
+      - 18443:443
+      - 18080:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml #Static traefik configuration (entrypoints, providers and log)
+      - ./traefik/dynamic_conf.toml:/etc/traefik/dynamic_conf.toml #Dynamic traefik configuration (https redirection, tls and certificates)
+      - ./logs/traefik/:/logs/
+      - ./ssl/${GITLAB_CERT_NAME}.crt:/etc/certs/server.crt
+      - ./ssl/${GITLAB_CERT_NAME}.key:/etc/certs/server.key
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`${GITLAB_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.api.entrypoints=http"
+      - "traefik.http.routers.api.tls=false"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.middlewares=auth"
+      # !!! TODO: Change login for basicauth for traefik dashboard and api
+      - "traefik.http.middlewares.auth.basicauth.users=hah-fr:$$apr1$$CHJUpXtG$$rEmKSSwo3pKtLkZ2TEOcT0"
+    networks:
+      - gitlab-network
+    
 
 networks:
   gitlab-network:

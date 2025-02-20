@@ -1,0 +1,29 @@
+global:
+  sendAnonymousUsage: false
+
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+
+providers:
+  file:
+    filename: "/etc/traefik/dynamic_conf.toml"
+  docker:
+    watch: true
+    network: gitlab_gitlab-network
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    
+api:
+  dashboard: true
+  debug: false
+  insecure: false
+  
+log:
+  filePath: "/logs/traefik.log"
+  level: INFO
+ 
+serversTransport:
+  InsecureSkipVerify: true
