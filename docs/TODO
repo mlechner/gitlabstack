@@ -2,6 +2,7 @@ some things to do:
 
 - add traefik or nginx in front of stack
 - support https
+- try mailanbindung per DOCKER_HOST
 
 - opt:
   - add nexus container for image and artifact repos?
