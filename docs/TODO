@@ -3,6 +3,7 @@ some things to do:
 - add traefik or nginx in front of stack
 - support https
 - try mailanbindung per DOCKER_HOST
+- reduce logs (or configure log rotation and housekeeping)
 
 - opt:
   - add nexus container for image and artifact repos?
