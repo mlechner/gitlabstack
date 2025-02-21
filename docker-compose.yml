@@ -45,9 +45,9 @@ services:
     labels:
       - "traefik.enable=true"
       # HTTP Router configuration
-      - "traefik.http.routers.gitlab-http.rule=Host(`${GITLAB_HOST}`) && PathPrefix(`${GITLAB_HTTP_URL}`)"
-      - "traefik.http.routers.gitlab-http.entrypoints=web"
-      - "traefik.http.services.gitlab-http.loadbalancer.server.port=${GITLAB_HTTP_PORT}"
+      #- "traefik.http.routers.gitlab-http.rule=Host(`${GITLAB_HOST}`) && PathPrefix(`${GITLAB_HTTP_URL}`)"
+      #- "traefik.http.routers.gitlab-http.entrypoints=web"
+      #- "traefik.http.services.gitlab-http.loadbalancer.server.port=${GITLAB_HTTP_PORT}"
       # HTTPS Router configuration
       - "traefik.http.routers.gitlab-https.rule=Host(`${GITLAB_HOST}`) && PathPrefix(`${GITLAB_HTTP_URL}`)"
       - "traefik.http.routers.gitlab-https.entrypoints=websecure"
@@ -77,16 +77,6 @@ services:
     image: traefik:latest
     container_name: gitlab-traefik
     restart: always
-    command:
-      - "--log.level=DEBUG"
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedByDefault=false"
-      - "--entrypoints.web.address=:18080"
-      - "--entrypoints.websecure.address=:18443"
-      - "--entrypoints.ssh.address=:18022"
-      - "--serversTransport.insecureSkipVerify=true"
     ports:
       - 18000:8080 # Traefik Dashboard
       - 18080:18080 # Gitlab HTTP über Traefik
@@ -94,9 +84,8 @@ services:
       - 18022:18022 # Gitlab-SSH über Traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      #- ./traefik/traefik.yml:/etc/traefik/traefik.yml #Static traefik configuration (entrypoints, providers and log)
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml #Static traefik configuration (entrypoints, providers and log)
       - ./traefik/dynamic_conf.toml:/etc/traefik/dynamic_conf.toml #Dynamic traefik configuration (https redirection, tls and certificates)
-      #- ./logs/traefik/:/logs/
       - "./ssl/${GITLAB_HOST}.crt:/etc/certs/server.crt"
       - "./ssl/${GITLAB_HOST}.key:/etc/certs/server.key"
     networks:

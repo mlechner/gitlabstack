@@ -19,32 +19,17 @@
 #            [http.services.redirectAll.loadBalancer]
 #                [[http.services.redirectAll.loadBalancer.servers]]
 #                    url = ""     
-					
+
 [tls]
 
   # Dynamic configuration
   
-  [[tls.certificates]]
+  [tls.certificates]
     certFile = "/etc/certs/server.crt"
     keyFile = "/etc/certs/server.key"
-    stores = ["default"]
-  
-  [[tls.certificates]]
-    # Note that since no store is defined,
-    # the certificate below will be stored in the `default` store.
-    certFile = "/etc/certs/server.crt"
-    keyFile = "/etc/certs/server.key"
-  
-  
-  # Dynamic configuration
-  
+
   [tls.stores]
     [tls.stores.default]
       [tls.stores.default.defaultCertificate]
         certFile = "/etc/certs/server.crt"
         keyFile  = "/etc/certs/server.key"
-        
-  [tls.options]
-    [tls.options.default]
-        minVersion = "VersionTLS12"
-        cipherSuites = ["TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305", "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"] 
