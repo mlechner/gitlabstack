@@ -8,7 +8,12 @@ services:
     hostname: "${GITLAB_HOST}"
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://${GITLAB_HOST}:${GITLAB_HTTP_PORT}${GITLAB_HTTP_URL}'
+        external_url 'https://${GITLAB_HOST}:${GITLAB_HTTPS_PORT}${GITLAB_HTTP_URL}/'
+        nginx['listen_port'] = 80
+        nginx['listen_port'] = 443
+        nginx['listen_https'] = true
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
         puma['port'] = 8081
         gitlab_workhorse['auth_backend'] = "http://localhost:8081"
@@ -28,32 +33,33 @@ services:
             encryption: 'plain'
         EOS
     ports:
-      - "${GITLAB_HTTP_PORT}:8080"
-      - "${GITLAB_HTTPS_PORT}:443"
-      - "${GITLAB_SSH_PORT}:22"
+      - "${GITLAB_HTTP_PORT}:80" # Gitlab direkt über HTTP
+      - "${GITLAB_HTTPS_PORT}:443" # Gitlab direkt über HTTPS
+      - "${GITLAB_SSH_PORT}:22" # Gitlab direkt über SSH (for git operations)
     volumes:
-      - './config:/etc/gitlab'
-      - './logs:/var/log/gitlab'
-      - './data:/var/opt/gitlab'
+      - "./config:/etc/gitlab"
+      - "./logs:/var/log/gitlab"
+      - "./data:/var/opt/gitlab"
+      - "./ssl/${GITLAB_HOST}.crt:/etc/gitlab/ssl/gitlab.crt:ro"
+      - "./ssl/${GITLAB_HOST}.key:/etc/gitlab/ssl/gitlab.key:ro"
     networks:
       - gitlab-network
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.gitlab_insecure.entrypoints=web
-      - traefik.http.routers.gitlab_insecure.rule=Host('dev-lem-fr.lab.bfs.de')
-      - traefik.http.routers.gitlab_insecure.middlewares=redirect@file
-
-      - traefik.http.routers.gitlab.entrypoints=web-secure
-      - traefik.http.routers.gitlab.rule=Host('dev-lem-fr.lab.bfs.de')
-      - traefik.http.services.gitlab.loadbalancer.server.port=8080
-      - traefik.docker.network=gitlab_gitlab-network
-
-      # Can't filter TCP traffic on SNI, see link below
-      # https://community.containo.us/t/routing-ssh-traffic-with-traefik-v2/717/6
-      - traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)
-      - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
-      - traefik.tcp.routers.gitlab-ssh.service=gitlab-ssh-svc
-      - traefik.tcp.services.gitlab-ssh-svc.loadbalancer.server.port=2222
+      - "traefik.enable=true"
+      # HTTP Router configuration
+      - "traefik.http.routers.gitlab-http.rule=Host(`${GITLAB_HOST}`) && PathPrefix(`${GITLAB_HTTP_URL}`)"
+      - "traefik.http.routers.gitlab-http.entrypoints=web"
+      - "traefik.http.services.gitlab-http.loadbalancer.server.port=${GITLAB_HTTP_PORT}"
+      # HTTPS Router configuration
+      - "traefik.http.routers.gitlab-https.rule=Host(`${GITLAB_HOST}`) && PathPrefix(`${GITLAB_HTTP_URL}`)"
+      - "traefik.http.routers.gitlab-https.entrypoints=websecure"
+      - "traefik.http.routers.gitlab-https.tls=true"
+      - "traefik.http.services.gitlab-https.loadbalancer.server.port=${GITLAB_HTTPS_PORT}"
+      # SSH Router configuration
+      - "traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.gitlab-ssh.entrypoints=ssh"
+      - "traefik.tcp.routers.gitlab-ssh.service=gitlab-ssh-service"
+      - "traefik.tcp.services.gitlab-ssh-service.loadbalancer.server.port=22"
 
   gitlab-runner:
     image: gitlab/gitlab-runner:latest
@@ -73,28 +79,30 @@ services:
     image: traefik:latest
     container_name: gitlab-traefik
     restart: always
+    command:
+      - "--log.level=DEBUG"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.web.address=:18080"
+      - "--entrypoints.websecure.address=:18443"
+      - "--entrypoints.ssh.address=:18022"
+      - "--serversTransport.insecureSkipVerify=true"
     ports:
-      - 18443:443
-      - 18080:80
+      - 18000:8080 # Traefik Dashboard
+      - 18080:18080 # Gitlab HTTP über Traefik
+      - 18443:18443 # Gitlab HTTPS über Traefik
+      - 18022:18022 # Gitlab-SSH über Traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml #Static traefik configuration (entrypoints, providers and log)
+      #- ./traefik/traefik.yml:/etc/traefik/traefik.yml #Static traefik configuration (entrypoints, providers and log)
       - ./traefik/dynamic_conf.toml:/etc/traefik/dynamic_conf.toml #Dynamic traefik configuration (https redirection, tls and certificates)
-      - ./logs/traefik/:/logs/
-      - ./ssl/${GITLAB_CERT_NAME}.crt:/etc/certs/server.crt
-      - ./ssl/${GITLAB_CERT_NAME}.key:/etc/certs/server.key
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`${GITLAB_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-      - "traefik.http.routers.api.entrypoints=http"
-      - "traefik.http.routers.api.tls=false"
-      - "traefik.http.routers.api.service=api@internal"
-      - "traefik.http.routers.api.middlewares=auth"
-      # !!! TODO: Change login for basicauth for traefik dashboard and api
-      - "traefik.http.middlewares.auth.basicauth.users=hah-fr:$$apr1$$CHJUpXtG$$rEmKSSwo3pKtLkZ2TEOcT0"
+      #- ./logs/traefik/:/logs/
+      - "./ssl/${GITLAB_HOST}.crt:/etc/certs/server.crt"
+      - "./ssl/${GITLAB_HOST}.key:/etc/certs/server.key"
     networks:
       - gitlab-network
-    
 
 networks:
   gitlab-network:

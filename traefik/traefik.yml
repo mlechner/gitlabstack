@@ -8,8 +8,8 @@ entryPoints:
     address: ":443"
 
 providers:
-  file:
-    filename: "/etc/traefik/dynamic_conf.toml"
+  #file:
+  #  filename: "/etc/traefik/dynamic_conf.toml"
   docker:
     watch: true
     network: gitlab_gitlab-network
