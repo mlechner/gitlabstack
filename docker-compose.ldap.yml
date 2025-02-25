@@ -3,6 +3,7 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'https://${GITLAB_HOST}:${GITLAB_HTTPS_PORT}${GITLAB_HTTP_URL}/'
+        registry_external_url 'http://${GITLAB_HOST}:15000'
         nginx['listen_port'] = 80
         nginx['listen_port'] = 443
         nginx['listen_https'] = true
@@ -14,6 +15,13 @@ services:
         gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
         gitlab_rails['initial_shared_runners_registration_token'] = "${REGISTRATION_TOKEN}"
         gitlab_rails['lfs_enabled'] = true
+        gitlab_rails['registry_enabled'] = true
+        registry['enable'] = true
+        registry['storage'] = {
+          'filesystem' => {
+            'rootdirectory' => '/var/opt/gitlab/registry'
+          }
+        }
         gitlab_rails['ldap_enabled'] = true
         gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
           main:
