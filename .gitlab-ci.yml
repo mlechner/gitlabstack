@@ -9,5 +9,9 @@ include:
   - template: Jobs/Container-Scanning.gitlab-ci.yml
   - template: Auto-DevOps.gitlab-ci.yml
 
+stages:
+  - build
+  - test
+
 sast:
   stage: test
