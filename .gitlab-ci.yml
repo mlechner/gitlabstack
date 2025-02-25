@@ -6,7 +6,7 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 include:
-- template: Jobs/ContainerScanning.gitlab-ci.yml
+#- template: obs/container-scanning.gitlab-ci.yml
 - template: Auto-DevOps.gitlab-ci.yml
 stages:
 - build
