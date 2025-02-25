@@ -2,7 +2,7 @@ global:
   sendAnonymousUsage: false
 
 entryPoints:
-  http:
+  web:
     address: ":18080"
   websecure:
     address: ":18443"
@@ -17,14 +17,15 @@ providers:
     network: gitlab-network
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
+
 api:
   dashboard: true
   debug: true
   insecure: true
   
 log:
-#  filePath: "/logs/traefik.log"
+  # filePath: "/logs/traefik.log"
   level: DEBUG
- 
+
 serversTransport:
   InsecureSkipVerify: true

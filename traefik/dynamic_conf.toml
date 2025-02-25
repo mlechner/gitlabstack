@@ -1,35 +1,32 @@
-#[http]
-#    [http.routers]
-#        [http.routers.httpsRedirect]
-#            entryPoints = ["http"]
-#            middlewares = ["httpsRedirect"]
-#            service = "redirectAll"
-#            rule = "HostRegexp(`{any:.*}`)"
-#    [http.middlewares]
-#        [http.middlewares.httpsRedirect]
-#            [http.middlewares.httpsRedirect.redirectScheme]
-#                scheme = "https"
-#        [http.middlewares.hsts]
-#            [http.middlewares.hsts.headers]
-#                sslRedirect = true
-#                stsSeconds = 31536000
-#                stsIncludeSubdomains = true
-#    [http.services]
-#        [http.services.redirectAll]
-#            [http.services.redirectAll.loadBalancer]
-#                [[http.services.redirectAll.loadBalancer.servers]]
-#                    url = ""     
+[http]
+    [http.routers]
+        [http.routers.httpsRedirect]
+            entryPoints = ["web"]
+            middlewares = ["httpsRedirect"]
+            service = "redirectAll"
+            rule = "HostRegexp(`{any:.*}`)"
+    [http.middlewares]
+        [http.middlewares.httpsRedirect.redirectScheme]
+            [http.middlewares.httpsRedirect.redirectScheme]
+                scheme = "https"
+#      [http.middlewares.hsts]
+#        [http.middlewares.hsts.headers]
+#          sslRedirect = true
+#          stsSeconds = 31536000
+#          stsIncludeSubdomains = true
+    [http.services]
+        [http.services.redirectAll]
+            [http.services.redirectAll.loadBalancer]
+                [http.services.redirectAll.loadBalancer.servers]
+                    url = ""     
 
 [tls]
-
-  # Dynamic configuration
-  
-  [tls.certificates]
-    certFile = "/etc/certs/server.crt"
-    keyFile = "/etc/certs/server.key"
-
-  [tls.stores]
-    [tls.stores.default]
-      [tls.stores.default.defaultCertificate]
+    # Dynamic configuration
+    [tls.certificates]
         certFile = "/etc/certs/server.crt"
-        keyFile  = "/etc/certs/server.key"
+        keyFile = "/etc/certs/server.key"
+    [tls.stores]
+        [tls.stores.default]
+            [tls.stores.default.defaultCertificate]
+                certFile = "/etc/certs/server.crt"
+                keyFile  = "/etc/certs/server.key"
