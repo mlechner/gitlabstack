@@ -26,6 +26,3 @@ api:
 log:
   # filePath: "/logs/traefik.log"
   level: DEBUG
-
-serversTransport:
-  InsecureSkipVerify: true

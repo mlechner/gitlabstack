@@ -7,8 +7,8 @@ services:
         nginx['listen_port'] = 80
         nginx['listen_port'] = 443
         nginx['listen_https'] = true
-        nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
-        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/${GITLAB_HOST}.crt"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/${GITLAB_HOST}.key"
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
         puma['port'] = 8081
         gitlab_workhorse['auth_backend'] = "http://localhost:8081"

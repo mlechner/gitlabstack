@@ -6,7 +6,7 @@
             service = "redirectAll"
             rule = "HostRegexp(`{any:.*}`)"
     [http.middlewares]
-        [http.middlewares.httpsRedirect.redirectScheme]
+        [http.middlewares.httpsRedirect]
             [http.middlewares.httpsRedirect.redirectScheme]
                 scheme = "https"
 #      [http.middlewares.hsts]
@@ -18,7 +18,7 @@
         [http.services.redirectAll]
             [http.services.redirectAll.loadBalancer]
                 [http.services.redirectAll.loadBalancer.servers]
-                    url = ""     
+                    url = ""
 
 [tls]
     # Dynamic configuration

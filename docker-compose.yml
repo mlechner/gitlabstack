@@ -11,8 +11,8 @@ services:
         nginx['listen_port'] = 80
         nginx['listen_port'] = 443
         nginx['listen_https'] = true
-        nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
-        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/${GITLAB_HOST}.crt"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/${GITLAB_HOST}.key"
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
         puma['port'] = 8081
         gitlab_workhorse['auth_backend'] = "http://localhost:8081"
@@ -47,8 +47,8 @@ services:
       - "./config:/etc/gitlab"
       - "./logs:/var/log/gitlab"
       - "./data:/var/opt/gitlab"
-      - "./ssl/${GITLAB_HOST}.crt:/etc/gitlab/ssl/gitlab.crt:ro"
-      - "./ssl/${GITLAB_HOST}.key:/etc/gitlab/ssl/gitlab.key:ro"
+      - "./ssl/${GITLAB_HOST}.crt:/etc/gitlab/ssl/${GITLAB_HOST}.crt:ro"
+      - "./ssl/${GITLAB_HOST}.key:/etc/gitlab/ssl/${GITLAB_HOST}.key:ro"
     networks:
       - gitlab-network
     labels:
@@ -95,8 +95,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml #Static traefik configuration (entrypoints, providers and log)
       - ./traefik/dynamic_conf.toml:/etc/traefik/dynamic_conf.toml #Dynamic traefik configuration (https redirection, tls and certificates)
-      - "./ssl/${GITLAB_HOST}.crt:/etc/certs/server.crt"
-      - "./ssl/${GITLAB_HOST}.key:/etc/certs/server.key"
+      - "./ssl/${GITLAB_HOST}.crt:/etc/certs/server.crt:ro"
+      - "./ssl/${GITLAB_HOST}.key:/etc/certs/server.key:ro"
     networks:
       - gitlab-network
 
