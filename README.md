@@ -65,6 +65,7 @@ Hinweise
 
 - Vergewissere dich, dass dein LDAP-Server anonyme Binds zulässt, wenn kein Bind-DN und Passwort verwendet werden.
 - Diese Konfiguration verwendet Basis-Ports. Stelle sicher, dass die Ports auf deinem Docker-Host nicht bereits belegt sind.
+- Weitere Hinweise findest Du im Unterordner ./docs/
 
 Support
 
