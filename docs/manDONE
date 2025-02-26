@@ -23,3 +23,35 @@
 -  Users
   - configured sone LDAP Users after their first login
 
+- Files on DOCKER_HOST
+  - create ssl stuff
+    - mkdir -p ./ssl
+    - create openssl-san.cnf -> see example below
+    - openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout <hostname>.key -out <hostname>.crt -config openssl-san.cnf -extensions reqext
+    - openssl x509 -in dev-lem-fr.lab.bfs.de.crt -text -noout
+    - mkdir runner-config/certs
+    - copy ssl certs into runner-config-certs as well
+
+- openssl-san.cnf example:
+[ req ]
+default_bits        = 4096
+prompt              = no
+default_md          = sha256
+reqextensions      = reqext
+distinguished_name  = dn
+
+[ dn ]
+C                   = DE
+ST                  = Baden-Wuerttemberg
+L                   = Freiburg
+O                   = Bundesamt fuer Strahlenschutz
+OU                  = RN 1
+CN                  = dev-lem-fr.lab.bfs.de
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1   = dev-lem-fr.lab.bfs.de
+
+
