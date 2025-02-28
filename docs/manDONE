@@ -9,6 +9,8 @@
       - Sign-up restrictions
         - Sign-up NOT enabled
         - E-Mail confirmation Soft
+    - Network
+      - Outbound requests: activate "Allow requests ... from webhooks and integrations"
     - Preferences
       - Localization
         - First day of week: Monday
