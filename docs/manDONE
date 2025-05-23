@@ -9,6 +9,11 @@
       - Sign-up restrictions
         - Sign-up NOT enabled
         - E-Mail confirmation Soft
+    - Metrics and profiling
+      - Usage statistics: Disable service ping
+      - Event tracking: Disable event tracking
+    - Network
+      - Outbound requests: activate "Allow requests ... from webhooks and integrations"
     - Preferences
       - Localization
         - First day of week: Monday
@@ -22,4 +27,41 @@
   - imported various Repos using Github access tokens into Groups and Subgroups
 -  Users
   - configured sone LDAP Users after their first login
+
+- Files on DOCKER_HOST
+  - create ssl stuff
+    - mkdir -p ./ssl
+    - create openssl-san.cnf -> see example below
+    - openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout <hostname>.key -out <hostname>.crt -config openssl-san.cnf -extensions reqext
+    - openssl x509 -in dev-lem-fr.lab.bfs.de.crt -text -noout
+    - mkdir runner-config/certs
+    - copy ssl certs into runner-config-certs as well
+
+- runner installation for shell executor
+
+docker exec gitlab-gitlab-runner-1 apt-get -y update
+docker exec gitlab-gitlab-runner-1 apt-get -y upgrade
+docker exec gitlab-gitlab-runner-1 apt-get -y install make git python3 docker.io docker-buildx
+
+- openssl-san.cnf example:
+[ req ]
+default_bits        = 4096
+prompt              = no
+default_md          = sha256
+reqextensions      = reqext
+distinguished_name  = dn
+
+[ dn ]
+C                   = DE
+ST                  = Baden-Wuerttemberg
+L                   = Freiburg
+O                   = Bundesamt fuer Strahlenschutz
+OU                  = RN 1
+CN                  = dev-lem-fr.lab.bfs.de
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1   = dev-lem-fr.lab.bfs.de
 
