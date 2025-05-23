@@ -7,6 +7,11 @@ docker compose -f docker-compose.yml -f docker-compose.ldap.yml logs -f gitlab
 sudo cat config/initial_root_password #if not set in .env
 docker compose -f docker-compose.yml -f docker-compose.ldap.yml down
 
+## upgrade gitlab version / gitlab container
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml pull gitlab gitlab-runner traefik
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml build ldap mailhog
+docker compose -f docker-compose.yml -f docker-compose.ldap.yml up -d --force-recreate ldap mailhog gitlab gitlab-runner traefik
+
 ## examples for runner registration
 # first "create" the runner in the Gitlab GUI, then register the runner using the token from creation
 docker exec gitlabstack-gitlab-runner-1 gitlab-runner register --non-interactive --docker-image alpine:latest --description "docker-runner-1" --executor "docker"
