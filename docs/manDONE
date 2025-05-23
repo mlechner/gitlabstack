@@ -9,6 +9,9 @@
       - Sign-up restrictions
         - Sign-up NOT enabled
         - E-Mail confirmation Soft
+    - Metrics and profiling
+      - Usage statistics: Disable service ping
+      - Event tracking: Disable event tracking
     - Network
       - Outbound requests: activate "Allow requests ... from webhooks and integrations"
     - Preferences
@@ -34,6 +37,12 @@
     - mkdir runner-config/certs
     - copy ssl certs into runner-config-certs as well
 
+- runner installation for shell executor
+
+docker exec gitlab-gitlab-runner-1 apt-get -y update
+docker exec gitlab-gitlab-runner-1 apt-get -y upgrade
+docker exec gitlab-gitlab-runner-1 apt-get -y install make git python3 docker.io docker-buildx
+
 - openssl-san.cnf example:
 [ req ]
 default_bits        = 4096
@@ -55,5 +64,4 @@ subjectAltName = @alt_names
 
 [ alt_names ]
 DNS.1   = dev-lem-fr.lab.bfs.de
-
 
